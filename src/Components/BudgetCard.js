@@ -3,7 +3,15 @@ import { Card, ProgressBar, Stack, Button } from "react-bootstrap";
 import { currenyFormatter } from "../Utils/utils";
 
 
-export default function BudgetCard({ name, amount, max, gray }) {
+export default function BudgetCard({ 
+  name, 
+  amount, 
+  max, 
+  gray, 
+  onAddExpenseClick,
+  onViewExpenseClick,
+  hideButtons
+}) {
 
     const classNames = [];
     if(amount>max){
@@ -19,30 +27,30 @@ export default function BudgetCard({ name, amount, max, gray }) {
             <div className="me-2">{name}</div>
             <div className="d-flex align-items-baseline">
               {currenyFormatter.format(amount)}
-              <span className="text-muted fs-6 ms-1">
+              {max && <span className="text-muted fs-6 ms-1">
                 / {currenyFormatter.format(max)}
-              </span>
+              </span>}
             </div>
           </Card.Title>
-          <ProgressBar
+          {max && <ProgressBar
             className="rounded-pill"
             variant={getProgressBarVarient(amount, max)}
             min={0}
             max={max}
             now={amount}
-          />
-          <Stack direction="horizontal" gap="2" className="mt-4">
-              <Button variant="outline-primary" className="ms-auto">Add Expense</Button>
-              <Button variant="outline-secondary">View Expense</Button>
-          </Stack>
+          />}
+          {!hideButtons && <Stack direction="horizontal" gap="2" className="mt-4">
+              <Button variant="outline-primary" className="ms-auto" onClick={onAddExpenseClick}>Add Expense</Button>
+              <Button variant="outline-secondary" onClick={onViewExpenseClick}>View Expense</Button>
+          </Stack>}
         </Card.Body>
       </Card>
   );
 }
 
 function getProgressBarVarient(amount, max) {
-  const ration = amount / max;
-  if (ration < 0.5) return "primary";
-  if (ration < 0.75) return "warning";
+  const ratio = amount / max;
+  if (ratio < 0.5) return "primary";
+  if (ratio < 0.75) return "warning";
   return "danger";
 }
